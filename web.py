@@ -41,7 +41,7 @@ def get_page():
 
     options = webdriver.FirefoxOptions()
     options.headless = True
-    options.binary = '/usr/bin/firefox-developer-edition'
+    options.binary = os.environ['FIREFOX_BINARY']
     driver = webdriver.Firefox(options=options)
 
     print('selenium ready, querying page...')
