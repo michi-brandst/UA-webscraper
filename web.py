@@ -31,7 +31,7 @@ def get_remote_list():
     print('getting existing pdfs...')
     existing_list = client.list(cloud_folder)
     # -1 bc .list() includes the current directory
-    print("{} pdfs already in the cloud.".format(len(existing_list) - 1))
+    print(f'{len(existing_list) - 1} pdfs already in the cloud.')
 
     return [item[item.find('_') + 1:item.find('.pdf')] for item in existing_list]
 
@@ -46,7 +46,7 @@ def get_page():
 
     print('selenium ready, querying page...')
 
-    driver.get("{}/articles/unearthed-arcana".format(base_url))
+    driver.get(f'{base_url}/articles/unearthed-arcana')
 
     more_button = driver.find_elements_by_class_name('more-button')
 
@@ -64,41 +64,40 @@ def get_page():
 
 
 def get_pdf(article):
-    r = requests.get("{}{}".format(base_url, article.link))
+    r = requests.get(f'{base_url}{article.link}')
     soup = BeautifulSoup(r.content, features='html.parser')
 
     button = soup.find('a', {'class': 'cta-button'})
     pdf_link = button['href']
 
-    if not re.match(r".*wizards\.com/.*\.(pdf|PDF)$", pdf_link):
-        print("No pdf download found for {}".format(
-            article.get_original_name()))
+    if not re.match(r'.*wizards\.com/.*\.(pdf|PDF)$', pdf_link):
+        print(f'No pdf download found for {article.get_original_name()}')
         print(pdf_link)
         return None
 
-    print("pulling {}...".format(pdf_link))
+    print(f'pulling {pdf_link}...')
 
     pdf = requests.get(pdf_link)
 
-    print("done.")
+    print('done.')
 
     return pdf.content
 
 
 def upload_file(article, dir):
-    file_path = "{}/{}.pdf".format(dir, article.name)
+    file_path = f'{dir}/{article.name}.pdf'
 
-    print("uploading {}...".format(article.get_original_name()))
+    print(f'uploading {article.get_original_name()}...')
 
     client.upload_sync(
-        remote_path="{}/{}.pdf".format(cloud_folder, article.name), local_path=file_path)
+        remote_path=f'{cloud_folder}/{article.name}.pdf', local_path=file_path)
     os.remove(file_path)
 
-    print("done.")
+    print('done.')
 
     notify_discord(article)
 
 
 def notify_discord(article):
     webhook.send(
-        "Edition **{}** of Unearted Arcana, **{}**, is now available on the mibra cloud. Check it out!".format(article.get_index(), article.get_original_name()))
+        f'Edition **{article.get_index()}** of Unearted Arcana, **{article.get_original_name()}**, is now available on the mibra cloud. Check it out!')

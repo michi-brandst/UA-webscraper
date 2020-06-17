@@ -1,10 +1,11 @@
 import os
+import re
 from bs4 import BeautifulSoup, element
 
 from web import get_page, get_remote_list
 from article import Article
 
-dir = "tmp"
+dir = 'tmp'
 
 if not os.path.exists(dir):
     os.makedirs(dir)
@@ -27,7 +28,7 @@ def extract_articles(soup):
             continue
         article_list.append(Article(child))
 
-    print("found {} articles.".format(len(article_list)))
+    print(f'found {len(article_list)} articles.')
 
     article_list.reverse()
 
@@ -36,8 +37,13 @@ def extract_articles(soup):
 
 def sync_file(article):
     print()
+
+    if re.match(r'[S|s]urvey', article.get_name_without_index()):
+        print(f'Ignoring {article.get_original_name()}.')
+        return 
+
     if article.get_name_without_index() in existing_list:
-        print("{} exists, skipping.".format(article.get_original_name()))
+        print(f'{article.get_original_name()} exists, skipping.')
         return
 
     article.load_pdf(dir)
@@ -51,9 +57,9 @@ for i, article in enumerate(articles):
     sync_file(article)
 
 # clearing temp folder
-print("clearing cache...")
+print('clearing cache...')
 tmp_files = os.listdir(dir)
 
 for file in tmp_files:
-    os.remove("{}/{}".format(dir, file))
-print("done!")
+    os.remove(f'{dir}/{file}')
+print('done!')

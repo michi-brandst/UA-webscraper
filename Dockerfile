@@ -1,6 +1,6 @@
 FROM python:3.8
 
-RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux32.tar.gz
+RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.23.0-arm7hf.tar.gz
 RUN tar -xvzf geckodriver*
 RUN chmod +x geckodriver
 RUN mv geckodriver /usr/local/bin/ 

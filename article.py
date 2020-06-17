@@ -14,19 +14,19 @@ class Article:
         self.__pdf = None
 
     def __str__(self):
-        return "Article {}".format(self.__original_name)
+        return f'Article {self.__original_name}'
 
     def set_index(self, index):
         self.__index = index
-        self.name = "{}_{}".format(self.__index, self.name)
+        self.name = f'{self.__index}_{self.name}'
 
     def __format_name(self):
-        chars = ["Unearthed Arcana: ", ":", ",", "!"]
+        chars = ['Unearthed Arcana: ', ':', ',', '!']
 
         for c in chars:
-            self.name = self.name.replace(c, "")
+            self.name = self.name.replace(c, '')
 
-        self.name = self.name.replace(" ", "_")
+        self.name = self.name.replace(' ', '_')
         self.name = self.name.lower()
         self.__name_wo_index = self.name
 
@@ -46,10 +46,10 @@ class Article:
         if not self.__pdf:
             return
 
-        with open("{}/{}.pdf".format(dir, self.name), "wb") as f:
+        with open(f'{dir}/{self.name}.pdf', 'wb') as f:
             f.write(self.__pdf)
 
-        print("{} written in cache directory.".format(self.__original_name))
+        print(f'{self.__original_name} written in cache directory.')
 
         upload_file(self, dir)
 
